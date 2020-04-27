@@ -23,18 +23,22 @@
 
 
 - (void)init:(CDVInvokedUrlCommand*)command {
-    NSString *appKey = [command.arguments objectAtIndex:0];
-    if (appKey == nil || [appKey isKindOfClass:[NSNull class]]) {
-        return;
-    }
-    NSString *channelId = [command.arguments objectAtIndex:1];
-    if ([channelId isKindOfClass:[NSNull class]]) {
-        channelId = nil;
-    }
-    UMConfigInstance.appKey = appKey;
-        
-    UMConfigInstance.channelId=channelId;
+    
+    [self.commandDelegate runInBackground:^{
+        NSString *appKey = [command.arguments objectAtIndex:0];
+        if (appKey == nil || [appKey isKindOfClass:[NSNull class]]) {
+            return;
+        }
+        NSString *channelId = [command.arguments objectAtIndex:1];
+        if ([channelId isKindOfClass:[NSNull class]]) {
+            channelId = nil;
+        }
+        UMConfigInstance.appKey = appKey;
+            
+        UMConfigInstance.channelId=channelId;
     [MobClick startWithConfigure:UMConfigInstance];
+    }];
+    
 
 }
 
@@ -87,7 +91,7 @@
         return;
     }
     NSDictionary *parameters = [command.arguments objectAtIndex:1];
-    if (parameters == nil && [parameters isKindOfClass:[NSNull class]]) {
+    if ([parameters isKindOfClass:[NSNull class]]) {
         parameters = nil;
     }
     [MobClick event:eventId attributes:parameters];
